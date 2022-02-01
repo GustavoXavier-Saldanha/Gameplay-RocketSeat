@@ -1,0 +1,64 @@
+import React from "react";
+import { styles } from "./styles";
+import { View, Text } from "react-native";
+import { RectButton, RectButtonProps } from "react-native-gesture-handler";
+import { GuildIcon } from "../GuildIcon";
+import { categories } from "../../utils/categories";
+import { theme } from "../../global/styles/theme";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { GuildProps } from "../Guild";
+import { LinearGradient } from "expo-linear-gradient";
+
+export type AppoitmentProps = {
+  id: string;
+  guild: GuildProps;
+  category: string;
+  date: string;
+  description: string;
+};
+
+type Props = RectButtonProps & {
+  data: AppoitmentProps;
+};
+
+export function Appoitment({ data, ...rest }: Props) {
+  const [category] = categories.filter((item) => item.id === data.category);
+  const { owner } = data.guild;
+  const { primary, on, secondary70, secondary50 } = theme.colors;
+
+  return (
+    <RectButton {...rest}>
+      <View style={styles.container}>
+        <LinearGradient
+          style={styles.guildIconContainer}
+          colors={[secondary50, secondary70]}
+        >
+          <GuildIcon />
+        </LinearGradient>
+
+        <View style={styles.content}>
+          <View style={styles.header}>
+            <Text style={styles.title}>{data.guild.name}</Text>
+            <Text style={styles.category}>{category.title}</Text>
+          </View>
+          <View style={styles.footer}>
+            <View style={styles.dateInfo}>
+              <MaterialIcons name="date-range" size={24} color={primary} />
+              <Text style={styles.date}>{data.date}</Text>
+            </View>
+
+            <View style={styles.playersInfo}>
+              <MaterialCommunityIcons
+                name="face-profile"
+                color={owner ? primary : on}
+              />
+              <Text style={[styles.player, { color: owner ? primary : on }]}>
+                {owner ? "Anfitrião" : " Visitante"}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </RectButton>
+  );
+}
